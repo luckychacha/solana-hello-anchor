@@ -29,3 +29,19 @@ pub struct Initialize<'info> {
 pub struct Counter {
     pub count: u64,
 }
+
+pub fn increment(ctx: Context<Increment>) -> Result<()> {
+    let counter = &mut ctx.accounts.counter;
+    msg!("Previous Count: { }", counter.count);
+    counter.count = counter.count.checked_add(1).unwrap();
+    msg!("Counter Incremented");
+    msg!("Current Count: { }", counter.count);
+    Ok(())
+}
+
+#[derive(Accounts)]
+pub struct Increment<'info> {
+    #[account(mut)]
+    pub counter: Account<'info, Counter>,
+    pub user: Signer<'info>,
+}
